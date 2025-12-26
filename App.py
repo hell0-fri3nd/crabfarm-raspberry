@@ -8,7 +8,7 @@ CORS(app,
     supports_credentials=True,
     origins=[
         "http://localhost:7987",
-        "http://127.0.0.1:7987"
+        "http://192.168.100.11:7987"
     ]
 )
 
@@ -20,4 +20,5 @@ if __name__ == '__main__':
     app.run(
         host='0.0.0.0',        
         debug=True,
+        threaded=True,
         port=4573)
