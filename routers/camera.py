@@ -3,35 +3,25 @@ from flask import (
     Response,
     jsonify
 )
+from view import VideoStream
+from services import JWTManager
 
-import cv2
-
+# 20 cm distance from the object to the camera
 camera = Blueprint('camera', __name__, url_prefix="/camera/")
-camera.config["CAMERA_STATUS"] = "LOADING"
+vs = VideoStream()
+jwt_manager = JWTManager()
 
-def camera_stream(camera=None):
-    while True:
-        ret, frame = camera.read()
-        if not ret:
-            camera.config["CAMERA_STATUS"] = "UNABLE TO LOAD THE CAMERA"
-            break
-        
-        camera.config["CAMERA_STATUS"] = "ONLINE"
-        
-        frame = cv2.flip(frame,1)
-        
-        _, frame_encoded  = cv2.imencode('.png', frame)
-        yield (b'--frame\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n' + frame_encoded.tobytes() + b'\r\n')
-                
 @camera.route('/stream')
 def stream():
-
-    camera = cv2.VideoCapture(0)
-    camera.config["CAMERA_STATUS"] = "LOADING"
-    return Response(camera_stream(camera=camera), mimetype='multipart/x-mixed-replace; boundary=frame')
-
+    return Response(vs.streaming(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @camera.route('/status', methods=["GET"])
+@jwt_manager.requires_access
 def status():    
-    return jsonify({"status": camera.config["CAMERA_STATUS"]}), 200
+    return jsonify(vs.status()), 200
+
+@camera.route('/start', methods=["PUT"])
+@jwt_manager.requires_access
+def start():    
+    result = vs.start()
+    return jsonify({"status": "Camera started" if result else "Camera not started"}), 200 if result else 500
