@@ -6,7 +6,7 @@ from flask import (
 from ultralytics import YOLO
 from pyzbar.pyzbar import decode
 import cv2
-from template import VideoStream
+from view import VideoStream
 
 # 20 cm distance from the object to the camera
 camera = Blueprint('camera', __name__, url_prefix="/camera/")
