@@ -1,0 +1,15 @@
+services:
+  crabfarmraspberry:
+    image: crabfarmraspberry
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 4573:4573
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: host.docker.internal   # Connect to your local XAMPP MySQL
+      DB_PORT: 3306
+      DB_DATABASE: crabfarm-database
+      DB_USERNAME: root               # Adjust if your XAMPP MySQL has a password
+      DB_PASSWORD: ""
