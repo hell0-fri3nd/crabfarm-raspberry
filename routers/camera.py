@@ -16,12 +16,12 @@ def stream():
     return Response(vs.streaming(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @camera.route('/status', methods=["GET"])
-@jwt_manager.requires_access
+# @jwt_manager.requires_access
 def status():    
     return jsonify(vs.status()), 200
 
 @camera.route('/start', methods=["PUT"])
-@jwt_manager.requires_access
+# @jwt_manager.requires_access
 def start():    
     result = vs.start()
     return jsonify({"status": "Camera started" if result else "Camera not started"}), 200 if result else 500
