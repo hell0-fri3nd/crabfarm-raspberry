@@ -8,7 +8,8 @@ CORS(app,
     supports_credentials=True,
     origins=[
         "http://localhost:7987",
-        "http://192.168.100.11:7987"
+        "http://192.168.100.11:7987",
+        "http://192.168.100.11:4572/"
     ]
 )
 
