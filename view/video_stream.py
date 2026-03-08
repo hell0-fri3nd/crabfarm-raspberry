@@ -8,7 +8,8 @@ from pyzbar.pyzbar import decode
 
 class VideoStream:
     def __init__(self):
-        self.camera = cv2.VideoCapture(0)
+        self.camera_loc = 0
+        self.camera = cv2.VideoCapture(self.camera_loc)
         if not self.camera.isOpened():
             raise RuntimeError("Camera not accessible")
         
@@ -81,7 +82,7 @@ class VideoStream:
         
         try:
             if not self.camera.isOpened():
-                self.camera = cv2.VideoCapture(0)
+                self.camera = cv2.VideoCapture(self.camera_loc)
 
             if self.stopped:
                 self.stopped = False
