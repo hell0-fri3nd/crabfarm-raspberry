@@ -10,6 +10,9 @@ class VideoStream:
     def __init__(self):
         self.camera_loc = 0
         self.camera = cv2.VideoCapture(self.camera_loc)
+        self.camera.set(cv2.CAV_PROP_FRAME_WIDTH, 640)
+        self.camera.set(cv2.CAV_PROP_FRAME_HEIGHT, 480)
+        
         if not self.camera.isOpened():
             raise RuntimeError("Camera not accessible")
         
@@ -83,6 +86,8 @@ class VideoStream:
         try:
             if not self.camera.isOpened():
                 self.camera = cv2.VideoCapture(self.camera_loc)
+                self.camera.set(cv2.CAV_PROP_FRAME_WIDTH, 640)
+                self.camera.set(cv2.CAV_PROP_FRAME_HEIGHT, 480)
 
             if self.stopped:
                 self.stopped = False
