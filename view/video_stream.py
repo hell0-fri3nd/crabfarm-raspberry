@@ -101,7 +101,7 @@ class VideoStream:
           
     def status(self):
         data = {
-            "camera_status":  self.camera.isOpened(),
+            "camera_status": not self.stopped and self.camera.isOpened(),
             "width_cm":       self.real_width,
             "height_cm":      self.real_height,
             "extracted_data": self.extracted_data
