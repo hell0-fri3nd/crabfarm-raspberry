@@ -1,27 +1,46 @@
 from flask import (
     Blueprint,
     Response,
-    jsonify
+    jsonify,
+    current_app
 )
-from view import VideoStream
-from services import JWTManager
 
-# 20 cm distance from the object to the camera
-camera = Blueprint('camera', __name__, url_prefix="/camera/")
-vs = VideoStream()
-jwt_manager = JWTManager()
+camera = Blueprint('camera', __name__, url_prefix="/camera")
 
 @camera.route('/stream')
 def stream():
+    vs = current_app.config['get_camera']()
+    
+    if not vs:
+        return "Camera not available", 503
+    
     return Response(vs.streaming(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @camera.route('/status', methods=["GET"])
-# @jwt_manager.requires_access
 def status():    
+    vs = current_app.config['get_camera']()
+    
+    if not vs:
+        return jsonify({"error": "Camera not initialized", "camera_status": False}), 503
+    
     return jsonify(vs.status()), 200
 
 @camera.route('/start', methods=["PUT"])
-# @jwt_manager.requires_access
 def start():    
+    vs = current_app.config['get_camera']()
+    
+    if not vs:
+        return jsonify({"status": "Camera not available"}), 503
+    
     result = vs.start()
     return jsonify({"status": "Camera started" if result else "Camera not started"}), 200 if result else 500
+
+@camera.route('/stop', methods=["PUT"])
+def stop():
+    vs = current_app.config['get_camera']()
+    
+    if not vs:
+        return jsonify({"status": "Camera not available"}), 503
+    
+    vs.stop()
+    return jsonify({"status": "Camera stopped"}), 200
